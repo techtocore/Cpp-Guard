@@ -109,7 +109,9 @@ int main(int argc, char *argv[])
 {
     if (argc != 3)
     {
-        std::cerr << "Usage: ./cppguard infile outfile\n";
+        std::cerr << "\n\tWelcome to CppGuard - a cross platform C++ code obfuscator\n\n";
+        std::cerr << "\t\tCurrently, this application is a command line utility\n";
+        std::cerr << "\t\tUsage: ./cppguard infile outfile\n";
         exit(1);
     }
 
