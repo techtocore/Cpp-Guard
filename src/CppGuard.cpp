@@ -1,3 +1,11 @@
+//============================================================================
+// Name        : CppGuard.cpp
+// Author      : Akash Ravi
+// Version     :
+// Copyright   : www.akashravi.tk
+// Description : Native C++ Code Obfuscater, Ansi-style
+//============================================================================
+
 #include <string>
 #include <fstream>
 #include <iostream>
