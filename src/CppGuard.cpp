@@ -3,12 +3,12 @@
 // Author      : Akash Ravi
 // Version     :
 // Copyright   : www.akashravi.tk
-// Description : Native C++ Code Obfuscater, Ansi-style
+// Description : Native C++ Code obfuscator
 //============================================================================
-
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <fstream>
 #include <stdlib.h>
@@ -113,10 +113,83 @@ void stripMultiLineComment(char *inFile)
     outFileStream.close();
 }
 
+std::string asciiReplace(std::string s)
+{
+    std::string p = "";
+    int q;
+    for (int i = 0; i <= s.size(); i++)
+    {
+        p += ('\\');
+        p += ('x');
+        std::stringstream stream;
+        stream << std::hex << (int)s[i];
+        std::string result(stream.str());
+        p += result;
+    }
+    return p;
+}
+
+void obfuscateString(char *inFile)
+{
+    std::ifstream inFileStream(inFile);
+    std::ofstream outFileStream(TEMP_FILE.c_str());
+    std::string line;
+    int startPos;
+    int endPos;
+    bool multiLine = false;
+    while (std::getline(inFileStream, line))
+    {
+
+        if (!multiLine)
+        {
+            startPos = line.find("\"\"");
+            if (startPos != std::string::npos)
+            {
+                endPos = line.find("\"\"");
+                if (endPos != std::string::npos)
+                {
+                    int commentLength = (endPos + 2) - startPos;
+                    line.erase(startPos, commentLength);
+                    multiLine = false;
+                }
+                else
+                {
+                    multiLine = true;
+                    line.erase();
+                }
+            }
+        }
+        else
+        {
+
+            endPos = line.find("\"\"");
+            if (endPos != std::string::npos)
+            {
+                line.erase(0, endPos + 2);
+                multiLine = false;
+            }
+
+            else
+            {
+                line.erase();
+                multiLine = true;
+            }
+        }
+        if (line.size() > 0)
+        {
+            outFileStream << line << std::endl;
+        }
+    }
+    inFileStream.close();
+    outFileStream.close();
+}
+
 int main(int argc, char *argv[])
 {
+    //std::string kk = "Akash";
     if (argc != 3)
     {
+        //std::cerr << "\n\t" << asciiReplace(kk) << "\n\n";
         std::cerr << "\n\tWelcome to CppGuard - a cross platform C++ code obfuscator\n\n";
         std::cerr << "\t\tCurrently, this application is a command line utility\n";
         std::cerr << "\t\tUsage: ./cppguard infile outfile\n";
@@ -135,7 +208,6 @@ int main(int argc, char *argv[])
     std::string line;
     outFileStream << "#include<bits/stdc++.h>" << std::endl;
     outFileStream << "#define ffrr(i,a,b) for(long long int i=a;i<b;i++)" << std::endl;
-    ;
     outFileStream << "#define vvvsort(v) sort(v.begin(),v.end())" << std::endl;
     outFileStream << "#define vvvuni(vec) vec.erase( unique( vec.begin(), vec.end() ), vec.end() )" << std::endl;
     while (std::getline(inFileStream, line))
@@ -147,7 +219,7 @@ int main(int argc, char *argv[])
 
             if (line.size() > 0)
             {
-                if ((line.find("main") != std::string::npos) and fl == 0)
+                if ((line.find("main(") != std::string::npos) and fl == 0)
                 {
 
                     fl = 1;
