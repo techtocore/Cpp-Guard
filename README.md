@@ -7,7 +7,7 @@ This shall provide significant protection for source code intellectual property,
 ## Features
 
 1. Strips single/multi line comments
-2. Adding a computational complex junk code snippet, while not affecting the asymptotic complexity of the overall program
+2. Adding a pseudo-complex junk code snippet, while not affecting the asymptotic complexity of the overall program
 3. Removing leading white-space
 4. Removing line breaks
 5. Handling all preprocessor directives, 'using' declarations and single-line 'else' clauses where the braces have been omitted.
