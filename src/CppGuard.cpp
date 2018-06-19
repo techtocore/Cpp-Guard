@@ -3,7 +3,7 @@
 // Author      : Akash Ravi
 // Version     :
 // Copyright   : www.akashravi.tk
-// Description : Native C++ Code obfuscator
+// Description : Native C++ Code obfuscation tool
 //============================================================================
 #include <string>
 #include <fstream>
@@ -129,68 +129,59 @@ std::string asciiReplace(std::string s)
     return p;
 }
 
-void obfuscateString(char *inFile)
+void obfuscateString(std::string &line)
 {
-    std::ifstream inFileStream(inFile);
-    std::ofstream outFileStream(TEMP_FILE.c_str());
-    std::string line;
+    // std::ifstream inFileStream(inFile);
+    // std::ofstream outFileStream(TEMP_FILE.c_str());
+    // std::string line;
     int startPos;
     int endPos;
-    bool multiLine = false;
-    while (std::getline(inFileStream, line))
+    // while (std::getline(inFileStream, line))
     {
 
-        if (!multiLine)
+        startPos = endPos = 0;
+        bool flag = 1;
+        std::string tmpStr;
+        for (int i = 0; i <= line.size(); i++)
         {
-            startPos = line.find("\"\"");
-            if (startPos != std::string::npos)
+            if (flag and line[i] == '\"')
             {
-                endPos = line.find("\"\"");
-                if (endPos != std::string::npos)
-                {
-                    int commentLength = (endPos + 2) - startPos;
-                    line.erase(startPos, commentLength);
-                    multiLine = false;
-                }
-                else
-                {
-                    multiLine = true;
-                    line.erase();
-                }
+                startPos = i;
+                flag = 0;
+                continue;
+            }
+            if (flag == 0 and line[i] == '\"')
+            {
+                endPos = i;
+                break;
             }
         }
-        else
+        if (endPos == 0)
         {
-
-            endPos = line.find("\"\"");
-            if (endPos != std::string::npos)
-            {
-                line.erase(0, endPos + 2);
-                multiLine = false;
-            }
-
-            else
-            {
-                line.erase();
-                multiLine = true;
-            }
+            return;
         }
+        for (int i = startPos + 1; i < endPos; i++)
+        {
+            tmpStr += line[i];
+        }
+        tmpStr = asciiReplace(tmpStr);
+        int commentLength = (endPos + 2) - startPos;
+        line.erase(startPos + 1, endPos - startPos - 1);
+        line.insert(startPos + 1, tmpStr);
         if (line.size() > 0)
         {
-            outFileStream << line << std::endl;
+            //outFileStream << line << std::endl;
         }
     }
-    inFileStream.close();
-    outFileStream.close();
+    //inFileStream.close();
+    //outFileStream.close();
 }
 
 int main(int argc, char *argv[])
 {
-    //std::string kk = "Akash";
     if (argc != 3)
     {
-        //std::cerr << "\n\t" << asciiReplace(kk) << "\n\n";
-        std::cerr << "\n\tWelcome to CppGuard - a cross platform C++ code obfuscator\n\n";
+        std::cerr << "\n\tWelcome to CppGuard - a cross platform C++ code obfuscation tool\n\n";
         std::cerr << "\t\tCurrently, this application is a command line utility\n";
         std::cerr << "\t\tUsage: ./cppguard infile outfile\n";
         exit(1);
@@ -199,6 +190,7 @@ int main(int argc, char *argv[])
     std::string junkText = "int ppp = 23;string dds = std::bitset<63>(ppp).to_string();string hhh; string ggg;ggg = dds;ffrr(i, dds.size() - 2, dds.size()) hhh += dds[i];int hyy = hhh.size();dds.clear();ffrr(i, 0, 31 - hyy){dds += '1';}vvvsort(dds);vvvuni(dds);ffrr(i, 0, hyy){dds += hhh[i];}hyy = std::bitset<63>(ggg).to_ulong();ggg.clear();if(ggg.size()!=0)cout<<\"yedhukku\";reverse(dds.begin(),dds.end());";
 
     stripMultiLineComment(argv[1]);
+    //obfuscateString(argv[1]);
 
     int jflag = 10;
     int fl = 0;
@@ -216,6 +208,7 @@ int main(int argc, char *argv[])
         {
             stripLeadingWhite(line);
             stripSingleLineComment(line);
+            obfuscateString(line);
 
             if (line.size() > 0)
             {
@@ -254,9 +247,7 @@ int main(int argc, char *argv[])
             }
         }
     }
-    if (jflag == 1)
-    {
-    }
+
     inFileStream.close();
     outFileStream.close();
     remove(TEMP_FILE.c_str());

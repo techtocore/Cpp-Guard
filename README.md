@@ -11,9 +11,10 @@ This shall provide significant protection for source code intellectual property,
 3. Removing leading white-space
 4. Removing line breaks
 5. Handling all preprocessor directives, 'using' declarations and single-line 'else' clauses where the braces have been omitted.
+6. Replacing string with its hex equivalent
 
 ## Todo
 
 1. Optimize stripping of comments using regex
 2. Implement renaming of variables
-3. Change string encoding type
+3. Change string encoding type - DONE
