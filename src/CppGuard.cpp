@@ -2,7 +2,7 @@
 // Name        : CppGuard.cpp
 // Author      : Akash Ravi
 // Version     :
-// Copyright   : www.akashravi.tk
+// Copyright   : akashravi.github.io
 // Description : Native C++ Code obfuscation tool
 //============================================================================
 #include <string>
